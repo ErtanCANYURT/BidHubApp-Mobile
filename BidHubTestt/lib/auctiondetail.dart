@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-class SellPage extends StatelessWidget {
+class AuctionDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Satış Sayfası'),
+        title: Text('Açık Artırma Detayı'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'İlan Adı',
@@ -19,12 +20,7 @@ class SellPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: 'İlan adını girin',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Text('Açık artırma adı gelecek'),
             SizedBox(height: 16),
             Text(
               'Açıklama',
@@ -34,13 +30,7 @@ class SellPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            TextFormField(
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'İlan açıklamasını girin',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Text('Açık artırma açıklaması gelecek'),
             SizedBox(height: 16),
             Text(
               'Şimdi Al Fiyatı',
@@ -50,13 +40,7 @@ class SellPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: 'Şimdi al fiyatını girin',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Text('Şimdi al fiyatı gelecek'),
             SizedBox(height: 16),
             Text(
               'Başlangıç Fiyatı',
@@ -66,13 +50,17 @@ class SellPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: 'Başlangıç fiyatını girin',
-                border: OutlineInputBorder(),
+            Text('En yüksek teklif gelecek'),
+            SizedBox(height: 16),
+            Text(
+              'En Yüksek Teklif',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
+            SizedBox(height: 8),
+            Text('Başlangıç fiyatı gelecek'),
             SizedBox(height: 16),
             Text(
               'Minimum Teklif Miktarı',
@@ -82,13 +70,7 @@ class SellPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: 'Minimum teklif miktarını girin',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Text('Minimum teklif miktarı gelecek'),
             SizedBox(height: 16),
             Text(
               'Açık Artırma Başlangıç Tarihi',
@@ -98,12 +80,7 @@ class SellPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: 'Açık artırma başlangıç tarihini seçin',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Text('Açık artırma başlangıç tarihi gelecek'),
             SizedBox(height: 16),
             Text(
               'Açık Artırma Bitiş Tarihi',
@@ -113,18 +90,34 @@ class SellPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
+            Text('Açık artırma bitiş tarihi gelecek'),
+            SizedBox(height: 16),
             TextFormField(
               decoration: InputDecoration(
-                hintText: 'Açık artırma bitiş tarihini seçin',
-                border: OutlineInputBorder(),
+                labelText: 'Teklifiniz',
               ),
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // İlanı yayımlama işlemleri
-              },
-              child: Text('İlanı Yayımla'),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Teklifi göndermek için işlemler
+                    },
+                    child: Text('Teklif Gönder'),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Satıcıyla iletişime geçmek için işlemler
+                    },
+                    child: Text('Satıcıyla İletişime Geç'),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

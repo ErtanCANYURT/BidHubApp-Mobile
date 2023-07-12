@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:bidhubtestt/main.dart'; // MainTemplate import edildi
-import 'package:bidhubtestt/sendmessage.dart'; // SendMessagePage import edildi
 
 class MessagesPage extends StatelessWidget {
   final List<String> messages = [
@@ -22,17 +21,12 @@ class MessagesPage extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               title: Text(messages[index]),
-              trailing: IconButton(
-                icon: Icon(Icons.arrow_forward),
+              trailing: ElevatedButton(
                 onPressed: () {
-                  // SendMessagePage sayfasına mesajın içeriğini ve diğer verileri gönderme işlemi
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SendMessagePage(message: messages[index]),
-                    ),
-                  );
+                  // Butona basıldığında mesajlaşma sayfasına yönlendirme yapılacak işlemler
+                  // Örneğin, Navigator.push ile mesajlaşma sayfasına yönlendirilebilirsiniz.
                 },
+                child: Text('Mesajlaş'),
               ),
             );
           },

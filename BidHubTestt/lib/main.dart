@@ -31,9 +31,6 @@ class _MainTemplateState extends State<MainTemplate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('BidHub'),
-      ),
       body: widget.child,
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(

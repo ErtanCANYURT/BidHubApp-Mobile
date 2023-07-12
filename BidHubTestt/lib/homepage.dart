@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bidhubtestt/auctiondetail.dart';
 import 'package:bidhubtestt/main.dart';
 
 class HomePage extends StatelessWidget {
@@ -6,6 +7,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MainTemplate(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Anasayfa'),
+        ),
         body: Column(
           children: <Widget>[
             Expanded(
@@ -23,8 +27,19 @@ class HomePage extends StatelessWidget {
                       ),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(snapshot.data![index]),
+                        return GestureDetector(
+                          onTap: () {
+                            // İlgili açık artırma detay sayfasına yönlendirme işlemleri
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AuctionDetailPage(),
+                              ),
+                            );
+                          },
+                          child: ListTile(
+                            title: Text(snapshot.data![index]),
+                          ),
                         );
                       },
                     );
@@ -39,9 +54,6 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-// Diğer sayfaları da aynı şekilde MainTemplate ile sarmalayarak ekleyebilirsiniz.
-
 
   Future<List<String>> fetchNewAuctions() async {
     await Future.delayed(Duration(seconds: 2));
