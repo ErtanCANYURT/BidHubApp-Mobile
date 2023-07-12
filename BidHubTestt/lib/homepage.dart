@@ -1,27 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(BidHubApp());
-
-class BidHubApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'BidHub',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      initialRoute: '/',
-      routes: {
-        '/home': (context) => HomePage(),
-        '/account': (context) => AccountPage(),
-        '/sell': (context) => SellPage(),
-        '/myListings': (context) => MyListingsPage(),
-        '/messages': (context) => MessagesPage(),
-      },
-    );
-  }
-}
-
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -35,7 +13,11 @@ class HomePage extends StatelessWidget {
             child: FutureBuilder<List<String>>(
               future: fetchNewAuctions(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
                   return GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -47,10 +29,8 @@ class HomePage extends StatelessWidget {
                       );
                     },
                   );
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return Center(child: Text('No data available.'));
                 }
               },
             ),
@@ -97,61 +77,5 @@ class HomePage extends StatelessWidget {
   Future<List<String>> fetchNewAuctions() async {
     await Future.delayed(Duration(seconds: 2));
     return ['Açık artırma 1', 'Açık artırma 2', 'Açık artırma 3', 'Açık artırma 4', 'Açık artırma 5', 'Açık artırma 6'];
-  }
-}
-
-class AccountPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Hesabım'),
-      ),
-      body: Center(
-        child: Text('Hesabım sayfası'),
-      ),
-    );
-  }
-}
-
-class SellPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Sat'),
-      ),
-      body: Center(
-        child: Text('Satış sayfası'),
-      ),
-    );
-  }
-}
-
-class MyListingsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('İlanlarım'),
-      ),
-      body: Center(
-        child: Text('İlanlarım sayfası'),
-      ),
-    );
-  }
-}
-
-class MessagesPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Mesajlarım'),
-      ),
-      body: Center(
-        child: Text('Mesajlarım sayfası'),
-      ),
-    );
   }
 }
