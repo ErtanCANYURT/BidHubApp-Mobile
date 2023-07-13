@@ -19,14 +19,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController identityNumberController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
-  String? imagePath;
+  File? imageFile;
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
-        imagePath = pickedImage.path;
+        imageFile = File(pickedImage.path);
       });
     }
   }
@@ -47,8 +47,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 50.0,
-                  backgroundImage: imagePath != null ? FileImage(File(imagePath!)) : null,
-                  child: imagePath == null ? Icon(Icons.add_a_photo) : null,
+                  backgroundImage: imageFile != null ? FileImage(imageFile!) : null,
+                  child: imageFile == null ? Icon(Icons.add_a_photo) : null,
                 ),
               ),
               SizedBox(height: 20.0),
