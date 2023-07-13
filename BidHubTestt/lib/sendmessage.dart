@@ -13,45 +13,95 @@ class SendMessagePage extends StatelessWidget {
         appBar: AppBar(
           title: Text('Mesaj Gönder'),
         ),
-        body: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 16),
-              Text(
-                'Mesajınız',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.all(16.0),
+                children: [
+                  MessageBubble(
+                    message: message,
+                    isSender: false,
+                  ),
+                  MessageBubble(
+                    message: 'Yeni mesaj',
+                    isSender: true,
+                  ),
+                  MessageBubble(
+                    message: 'Başka bir mesaj',
+                    isSender: false,
+                  ),
+                  // Diğer mesajlar buraya eklenir
+                ],
               ),
-              SizedBox(height: 8),
-              TextFormField(
-                maxLines: 5,
-                decoration: InputDecoration(
-                  labelText: 'Mesajınızı buraya yazın',
-                  alignLabelWithHint: true,
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 16),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Mesaj gönderme işlemleri
-                    String messageText = 'Mesajınızı buradan alıcıya iletme işlemini gerçekleştirin.';
-                    // İşlemler tamamlandıktan sonra mesajın alıcıya iletildiğine dair geribildirim sağlayabilirsiniz.
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Mesajınız gönderildi'),
+            ),
+            Divider(),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Mesajınızı buraya yazın',
+                        border: OutlineInputBorder(),
                       ),
-                    );
-                  },
-                  child: Text('Mesaj Gönder'),
-                ),
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  IconButton(
+                    onPressed: () {
+                      // Mesaj gönderme işlemleri
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Mesajınız gönderildi'),
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.send),
+                  ),
+                ],
               ),
-            ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  final String message;
+  final bool isSender;
+
+  const MessageBubble({
+    required this.message,
+    required this.isSender,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 8.0,
+        bottom: 8.0,
+        left: isSender ? 80.0 : 8.0,
+        right: isSender ? 8.0 : 80.0,
+      ),
+      child: Align(
+        alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          padding: EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+            color: isSender ? Colors.blue : Colors.grey[300],
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Text(
+            message,
+            style: TextStyle(
+              fontSize: 16.0,
+              color: isSender ? Colors.white : Colors.black,
+            ),
           ),
         ),
       ),
