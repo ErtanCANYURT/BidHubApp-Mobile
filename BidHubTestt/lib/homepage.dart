@@ -2,7 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:bidhubtestt/auctiondetail.dart';
 import 'package:bidhubtestt/main.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late List<String> auctions;
+  late List<String> filteredAuctions;
+
+  @override
+  void initState() {
+    super.initState();
+    auctions = [
+      'Açık artırma 1',
+      'Açık artırma 2',
+      'Açık artırma 3',
+      'Açık artırma 4',
+      'Açık artırma 5',
+      'Açık artırma 6',
+    ];
+    filteredAuctions = List.from(auctions);
+  }
+
+  void _filterAuctions(String keyword) {
+    setState(() {
+      filteredAuctions = auctions
+          .where((auction) => auction.toLowerCase().contains(keyword.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
@@ -12,40 +42,61 @@ class HomePage extends StatelessWidget {
         ),
         body: Column(
           children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: TextField(
+                onChanged: _filterAuctions,
+                decoration: InputDecoration(
+                  labelText: 'Arama',
+                  prefixIcon: Icon(Icons.search),
+                ),
+              ),
+            ),
             Expanded(
-              child: FutureBuilder<List<String>>(
-                future: fetchNewAuctions(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                      ),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            // İlgili açık artırma detay sayfasına yönlendirme işlemleri
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => AuctionDetailPage(),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.75,
+                ),
+                itemCount: filteredAuctions.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      // İlgili açık artırma detay sayfasına yönlendirme işlemleri
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AuctionDetailPage(auctionName: filteredAuctions[index]),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/product_${index + 1}.jpg'),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            );
-                          },
-                          child: ListTile(
-                            title: Text(snapshot.data![index]),
+                            ),
                           ),
-                        );
-                      },
-                    );
-                  } else {
-                    return Center(child: Text('No data available.'));
-                  }
+                          SizedBox(height: 8.0),
+                          Text(
+                            filteredAuctions[index],
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                 },
               ),
             ),
@@ -53,10 +104,5 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<List<String>> fetchNewAuctions() async {
-    await Future.delayed(Duration(seconds: 2));
-    return ['Açık artırma 1', 'Açık artırma 2', 'Açık artırma 3', 'Açık artırma 4', 'Açık artırma 5', 'Açık artırma 6'];
   }
 }

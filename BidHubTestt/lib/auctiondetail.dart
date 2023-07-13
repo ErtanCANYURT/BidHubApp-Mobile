@@ -3,6 +3,10 @@ import 'package:bidhubtestt/sendmessage.dart';
 import 'package:bidhubtestt/sellerpage.dart';
 
 class AuctionDetailPage extends StatefulWidget {
+  final String auctionName; // Güncellenen kısım
+
+  AuctionDetailPage({required this.auctionName});
+
   @override
   _AuctionDetailPageState createState() => _AuctionDetailPageState();
 }
@@ -69,7 +73,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text('Açık artırma adı gelecek'),
+                  Text(widget.auctionName), // Güncellenen kısım
                   SizedBox(height: 16),
                   Text(
                     'Açıklama',

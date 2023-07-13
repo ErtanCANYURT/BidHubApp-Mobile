@@ -20,7 +20,7 @@ class MyListingPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AuctionDetailPage(),
+                      builder: (context) => AuctionDetailPage(auctionName: 'Açık artırma $index'), // Güncellenen kısım
                     ),
                   );
                 },
