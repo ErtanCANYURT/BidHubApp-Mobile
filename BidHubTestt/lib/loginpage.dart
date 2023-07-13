@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'register.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -49,6 +52,7 @@ class LoginPage extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () {
                 // Facebook ile giriş yapma işlemleri burada gerçekleştirilebilir
+                launch('https://www.facebook.com/login');
               },
               icon: Icon(Icons.facebook),
               label: Text('Facebook ile Giriş Yap'),
@@ -57,9 +61,20 @@ class LoginPage extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () {
                 // Google ile giriş yapma işlemleri burada gerçekleştirilebilir
+                launch('https://accounts.google.com/v3/signin/identifier?dsh=S-1962814945%3A1689269180606003&continue=https%3A%2F%2Faccounts.google.com%2F&followup=https%3A%2F%2Faccounts.google.com%2F&ifkv=AeDOFXh_eKwYwCQ9juNxGolJFkl2K5cLMwgODhnewEzOAaIvdU6ropRk4VPST09SkR3UahmWVYtzfw&passive=1209600&flowName=GlifWebSignIn&flowEntry=ServiceLogin');
               },
               icon: Icon(Icons.g_translate),
               label: Text('Google ile Giriş Yap'),
+            ),
+            SizedBox(height: 20.0),
+            Text("Henüz hesabın yok mu?"),
+            SizedBox(height: 10.0),
+            ElevatedButton(
+              onPressed: () {
+                // Kayıt ol sayfasına yönlendirme işlemleri
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()));
+              },
+              child: Text('Kayıt Ol'),
             ),
           ],
         ),
