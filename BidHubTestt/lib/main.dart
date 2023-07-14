@@ -6,8 +6,20 @@ import 'package:bidhubtestt/notfoundpage.dart';
 import 'package:bidhubtestt/account.dart';
 import 'package:bidhubtestt/sell.dart';
 import 'package:bidhubtestt/mylisting.dart';
+import 'dart:io';
 
-void main() => runApp(BidHubApp());
+void main() async {
+  HttpOverrides.global = MyHttpOverrides();
+  runApp(BidHubApp());
+}
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
 
 class MainTemplate extends StatefulWidget {
   final Widget child;
