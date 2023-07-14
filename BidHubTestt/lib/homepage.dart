@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:bidhubtestt/auctiondetail.dart';
-import 'package:bidhubtestt/main.dart';
+import 'package:http/http.dart' as http;
+
+import 'auctiondetail.dart';
+import 'main.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,16 +18,39 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    auctions = [
-      'Açık artırma 1',
-      'Açık artırma 2',
-      'Açık artırma 3',
-      'Açık artırma 4',
-      'Açık artırma 5',
-      'Açık artırma 6',
-    ];
-    filteredAuctions = List.from(auctions);
+    auctions = [];
+    filteredAuctions = [];
+    fetchAuctions();
   }
+
+  void fetchAuctions() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://bidhubappprod.azurewebsites.net/auction/Auction/ListAllAuction'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as List<dynamic>;
+        List<String> fetchedAuctions = data.map<String>((dynamic item) {
+          final auctionName = item['auctionName'];
+          final auctionid = item['id'];// Bu satırda "auctionName" alanını güncel JSON veri yapısına göre ayarlayın
+          return auctionName.toString();
+        }).toList();
+        setState(() {
+          auctions = fetchedAuctions;
+          filteredAuctions = fetchedAuctions;
+        });
+      } else {
+        // Handle error response
+        print('Failed to fetch auctions. Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle network or other errors
+      print('Failed to fetch auctions. Error: $e');
+    }
+  }
+
+
 
   void _filterAuctions(String keyword) {
     setState(() {
