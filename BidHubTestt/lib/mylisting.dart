@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bidhubtestt/main.dart';
-import 'package:bidhubtestt/auctiondetail.dart'; // AuctionDetailPage import edildi
+import 'package:bidhubtestt/auctiondetail.dart';
 
 class MyListingPage extends StatelessWidget {
   @override
@@ -13,6 +13,8 @@ class MyListingPage extends StatelessWidget {
         body: ListView.builder(
           itemCount: 5, // Favorilere alınmış açık artırma sayısı
           itemBuilder: (context, index) {
+            final auctionId = 'Açık artırma $index';
+            final auctionName = 'Açık artırma $index';
             return Card(
               child: InkWell(
                 onTap: () {
@@ -20,7 +22,10 @@ class MyListingPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AuctionDetailPage(auctionName: 'Açık artırma $index'), // Güncellenen kısım
+                      builder: (context) => AuctionDetailPage(
+                        auctionId: auctionId,
+                        auctionName: auctionName,
+                      ),
                     ),
                   );
                 },
@@ -42,7 +47,7 @@ class MyListingPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Açık artırma $index',
+                          auctionName,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

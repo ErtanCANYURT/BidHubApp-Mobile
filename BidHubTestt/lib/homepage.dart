@@ -12,8 +12,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<String> auctions;
-  late List<String> filteredAuctions;
+  late List<Map<String, dynamic>> auctions;
+  late List<Map<String, dynamic>> filteredAuctions;
 
   @override
   void initState() {
@@ -31,10 +31,13 @@ class _HomePageState extends State<HomePage> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as List<dynamic>;
-        List<String> fetchedAuctions = data.map<String>((dynamic item) {
+        List<Map<String, dynamic>> fetchedAuctions = data.map<Map<String, dynamic>>((dynamic item) {
           final auctionName = item['auctionName'];
-          final auctionid = item['id'];// Bu satırda "auctionName" alanını güncel JSON veri yapısına göre ayarlayın
-          return auctionName.toString();
+          final auctionid = item['id'];
+          return {
+            'id': auctionid,
+            'auctionName': auctionName,
+          };
         }).toList();
         setState(() {
           auctions = fetchedAuctions;
@@ -50,12 +53,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
-
   void _filterAuctions(String keyword) {
     setState(() {
       filteredAuctions = auctions
-          .where((auction) => auction.toLowerCase().contains(keyword.toLowerCase()))
+          .where((auction) => auction['auctionName'].toLowerCase().contains(keyword.toLowerCase()))
           .toList();
     });
   }
@@ -87,13 +88,17 @@ class _HomePageState extends State<HomePage> {
                 ),
                 itemCount: filteredAuctions.length,
                 itemBuilder: (context, index) {
+                  final auctionid = filteredAuctions[index]['id'].toString();
                   return GestureDetector(
                     onTap: () {
                       // İlgili açık artırma detay sayfasına yönlendirme işlemleri
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => AuctionDetailPage(auctionName: filteredAuctions[index]),
+                          builder: (_) => AuctionDetailPage(
+                            auctionId: auctionid,
+                            auctionName: filteredAuctions[index]['auctionName'],
+                          ),
                         ),
                       );
                     },
@@ -115,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           SizedBox(height: 8.0),
                           Text(
-                            filteredAuctions[index],
+                            filteredAuctions[index]['auctionName'],
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
