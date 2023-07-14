@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'Models/User.dart';
 import 'register.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'Utils//constants.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -28,6 +30,18 @@ class LoginPage extends StatelessWidget {
       // İstek başarılıysa ve kullanıcı girişi onaylandıysa
       if (response.statusCode == 200) {
         // Giriş işlemi başarılı olduğunda anasayfaya yönlendir
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        UserLoginDto userLoginDto = UserLoginDto.fromJson(jsonResponse);
+
+        Constants.user.name = userLoginDto.userInformation.name;
+        Constants.user.email = userLoginDto.userInformation.email;
+        Constants.user.address = userLoginDto.userInformation.address;
+        Constants.user.identityNumber = userLoginDto.userInformation.identityNumber;
+        Constants.user.password = userLoginDto.userInformation.password;
+        Constants.user.phoneNumber = userLoginDto.userInformation.phoneNumber;
+        Constants.user.signalRConnectionId = userLoginDto.userInformation.signalRConnectionId;
+        Constants.user.userName = userLoginDto.userInformation.userName;
+
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         // İstek başarılı olmadıysa veya kullanıcı girişi hatalıysa hata mesajını gösterin

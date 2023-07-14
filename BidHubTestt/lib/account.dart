@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bidhubtestt/main.dart';
 import 'package:bidhubtestt/myorderspage.dart';
 import 'package:bidhubtestt/mybidspage.dart';
+import 'Utils//constants.dart';
 
 class AccountPage extends StatelessWidget {
   @override
@@ -22,7 +23,7 @@ class AccountPage extends StatelessWidget {
               ),
               SizedBox(height: 16),
               Text(
-                'Kullanıcı Adı',
+                Constants.user.userName,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -30,7 +31,7 @@ class AccountPage extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
-                'E-posta Adresi',
+                Constants.user.email,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
@@ -48,17 +49,17 @@ class AccountPage extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.email),
                 title: Text('E-posta Adresi'),
-                subtitle: Text('kullanici@mail.com'),
+                subtitle: Text(Constants.user.email),
               ),
               ListTile(
                 leading: Icon(Icons.phone),
                 title: Text('Telefon Numarası'),
-                subtitle: Text('1234567890'),
+                subtitle: Text(Constants.user.phoneNumber),
               ),
               ListTile(
                 leading: Icon(Icons.location_on),
-                title: Text('Konum'),
-                subtitle: Text('İstanbul, Türkiye'),
+                title: Text('Adres'),
+                subtitle: Text(Constants.user.address),
               ),
               SizedBox(height: 16),
               Text(
