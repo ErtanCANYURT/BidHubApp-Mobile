@@ -33,10 +33,12 @@ class _HomePageState extends State<HomePage> {
         final data = json.decode(response.body) as List<dynamic>;
         List<Map<String, dynamic>> fetchedAuctions = data.map<Map<String, dynamic>>((dynamic item) {
           final auctionName = item['auctionName'];
-          final auctionid = item['id'];
+          final auctionId = item['id'];
+          final sellerId = item['sellerId']; // Eklenen satıcının ID'si
           return {
-            'id': auctionid,
+            'id': auctionId,
             'auctionName': auctionName,
+            'sellerId': sellerId, // Eklenen satıcının ID'si
           };
         }).toList();
         setState(() {
@@ -88,7 +90,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 itemCount: filteredAuctions.length,
                 itemBuilder: (context, index) {
-                  final auctionid = filteredAuctions[index]['id'].toString();
+                  final auctionId = filteredAuctions[index]['id'].toString();
+                  final sellerId = filteredAuctions[index]['sellerId'].toString(); // Satıcının ID'sini al
                   return GestureDetector(
                     onTap: () {
                       // İlgili açık artırma detay sayfasına yönlendirme işlemleri
@@ -96,8 +99,9 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => AuctionDetailPage(
-                            auctionId: auctionid,
+                            auctionId: auctionId,
                             auctionName: filteredAuctions[index]['auctionName'],
+                            sellerId: sellerId, // Satıcının ID'sini geçir
                           ),
                         ),
                       );

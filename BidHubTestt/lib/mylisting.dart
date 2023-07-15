@@ -25,6 +25,7 @@ class MyListingPage extends StatelessWidget {
                       builder: (context) => AuctionDetailPage(
                         auctionId: auctionId,
                         auctionName: auctionName,
+                        sellerId: '', // Satıcının ID'si
                       ),
                     ),
                   );

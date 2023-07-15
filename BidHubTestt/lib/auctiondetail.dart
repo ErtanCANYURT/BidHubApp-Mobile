@@ -1,14 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:bidhubtestt/sendmessage.dart';
-import 'package:bidhubtestt/sellerpage.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'sendmessage.dart';
+import 'sellerpage.dart';
 
 class AuctionDetailPage extends StatefulWidget {
   final String auctionId;
   final String auctionName;
+  final String sellerId; // Eklenen parametre
 
-  AuctionDetailPage({required this.auctionId, required this.auctionName});
+  AuctionDetailPage({required this.auctionId, required this.auctionName, required this.sellerId});
 
   @override
   _AuctionDetailPageState createState() => _AuctionDetailPageState();
@@ -17,6 +20,7 @@ class AuctionDetailPage extends StatefulWidget {
 class _AuctionDetailPageState extends State<AuctionDetailPage> {
   late Future<Map<String, dynamic>> auctionData;
   bool isFavorite = false;
+  TextEditingController bidAmountController = TextEditingController();
 
   @override
   void initState() {
@@ -31,6 +35,37 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
     } else {
       print('Failed to fetch auction data. Status code: ${response.statusCode}');
       throw Exception('Failed to fetch auction data');
+    }
+  }
+
+  Future<void> submitBid() async {
+    final bidAmount = int.parse(bidAmountController.text);
+    final createdDate = DateTime.now().toUtc().toString();
+
+    final requestBody = {
+      "auctionId": int.parse(widget.auctionId),
+      "bidAmount": bidAmount,
+      "createdDate": createdDate,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://bidhubappprod.azurewebsites.net/bids/Bids/AddAsync'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        // Bid submitted successfully
+        // Handle the response if needed
+        print('Bid submitted');
+      } else {
+        // Handle error response
+        print('Failed to submit bid. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle network or other errors
+      print('Failed to submit bid. Error: $e');
     }
   }
 
@@ -66,6 +101,11 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
             );
           } else if (snapshot.hasData) {
             final auction = snapshot.data!;
+            if (auction == null) {
+              return Center(
+                child: Text('No data available'),
+              );
+            }
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +120,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage('assets/images/product_$index.jpg'),
+                              image: AssetImage('assets/images/product_${index + 1}.jpg'),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -151,7 +191,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
                           ),
                         ),
                         SizedBox(height: 8),
-                        Text(auction['minBidAmour'].toString()),
+                        Text(auction['minBidAmount'].toString()),
                         SizedBox(height: 16),
                         Text(
                           'Açık Artırma Başlangıç Tarihi',
@@ -174,6 +214,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
                         Text(auction['endDate']),
                         SizedBox(height: 16),
                         TextFormField(
+                          controller: bidAmountController,
                           decoration: InputDecoration(
                             labelText: 'Teklifiniz',
                           ),
@@ -184,7 +225,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // Teklifi göndermek için işlemler
+                                  submitBid();
                                 },
                                 child: Text('Teklif Gönder'),
                               ),
@@ -212,8 +253,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => SellerPage(
-                                      sellerName: 'Satıcının kullanıcı adı',
-                                      sellerLocation: 'Satıcının konumu',
+                                      sellerId: widget.sellerId, // Satıcının ID'si
                                     ),
                                   ),
                                 );
@@ -233,36 +273,6 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
               child: Text('No data available'),
             );
           }
-        },
-      ),
-    );
-  }
-}
-
-class MyListingPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Açık Artırmalarım'),
-      ),
-      body: ListView.builder(
-        itemCount: 5, // Örnek olarak 5 açık artırma listeleniyor
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('Açık artırma $index'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AuctionDetailPage(
-                    auctionId: ' $index',
-                    auctionName: 'Açık artırma $index',
-                  ),
-                ),
-              );
-            },
-          );
         },
       ),
     );
