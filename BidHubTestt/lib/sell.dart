@@ -190,7 +190,7 @@ class _SellPageState extends State<SellPage> {
                 DateTime bitisDateTime = DateTime.parse(bitisTarihi);
 
                 String url = 'https://bidhubappprod.azurewebsites.net/auction/Auction/AddAsync'; // API'nizin URL'sini buraya yazın
-                Map<String, String> headers = {'Content-Type': 'application/json'};
+                Map<String, String> headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${Constants.user.userAccessToken}'};
                 Map<String, dynamic> jsonBody = {
                   'Name': ilanAdi,
                   'Description': aciklama,

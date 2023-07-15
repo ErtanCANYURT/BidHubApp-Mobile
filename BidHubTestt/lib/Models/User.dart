@@ -1,4 +1,5 @@
 class User {
+  int id;
   String userName;
   String name;
   String surname;
@@ -8,8 +9,10 @@ class User {
   String address;
   String signalRConnectionId;
   String email;
+  String userAccessToken;
 
   User({
+    required this.id,
     required this.userName,
     required this.name,
     required this.surname,
@@ -19,10 +22,12 @@ class User {
     required this.address,
     required this.signalRConnectionId,
     required this.email,
+    required this.userAccessToken,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      id: json['id'],
       userName: json['userName'],
       name: json['name'],
       surname: json['surname'],
@@ -32,6 +37,7 @@ class User {
       address: json['address'],
       signalRConnectionId: json['signalRConnectionId'],
       email: json['email'],
+      userAccessToken: json['userAccessToken'],
     );
   }
 }

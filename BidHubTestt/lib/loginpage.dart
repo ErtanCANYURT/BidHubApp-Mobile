@@ -37,6 +37,7 @@ class LoginPage extends StatelessWidget {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         UserLoginDto userLoginDto = UserLoginDto.fromJson(jsonResponse);
 
+        Constants.user.id = userLoginDto.userInformation.id;
         Constants.user.name = userLoginDto.userInformation.name;
         Constants.user.email = userLoginDto.userInformation.email;
         Constants.user.address = userLoginDto.userInformation.address;
@@ -45,6 +46,7 @@ class LoginPage extends StatelessWidget {
         Constants.user.phoneNumber = userLoginDto.userInformation.phoneNumber;
         Constants.user.signalRConnectionId = userLoginDto.userInformation.signalRConnectionId;
         Constants.user.userName = userLoginDto.userInformation.userName;
+        Constants.user.userAccessToken = userLoginDto.userAccessToken;
 
         //Buraya signalR connection yapılmalı
         await initSignalR();

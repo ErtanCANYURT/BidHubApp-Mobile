@@ -3,6 +3,7 @@ import 'package:bidhubtestt/Models/User.dart';
 class Constants {
 
   static User user = User(
+    id: 0,
     userName: "",
     name: "",
     surname: "",
@@ -12,5 +13,6 @@ class Constants {
     address: "",
     signalRConnectionId: "",
     email: "",
+    userAccessToken: "",
   );
 }
