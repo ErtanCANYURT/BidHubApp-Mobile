@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:signalr_client/hub_connection.dart';
+import 'package:signalr_client/hub_connection_builder.dart';
 import 'dart:convert';
 import 'Models/User.dart';
 import 'register.dart';
@@ -9,6 +11,8 @@ import 'Utils//constants.dart';
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final serverUrl = "https://bidhubappprod.azurewebsites.net/SignalRHub";
+  HubConnection? hubConnection;
 
   Future<void> loginUser(BuildContext context) async {
     String email = emailController.text;
@@ -41,6 +45,9 @@ class LoginPage extends StatelessWidget {
         Constants.user.phoneNumber = userLoginDto.userInformation.phoneNumber;
         Constants.user.signalRConnectionId = userLoginDto.userInformation.signalRConnectionId;
         Constants.user.userName = userLoginDto.userInformation.userName;
+
+        //Buraya signalR connection yapılmalı
+        await initSignalR();
 
         Navigator.pushReplacementNamed(context, '/home');
       } else {
@@ -82,6 +89,22 @@ class LoginPage extends StatelessWidget {
           );
         },
       );
+    }
+  }
+
+  Future<void> initSignalR() async {
+    try {
+      hubConnection = HubConnectionBuilder().withUrl(serverUrl).build();
+      hubConnection!.onclose((error) => print("Connection closed."));
+      await hubConnection!.start();
+      print("Connection started.");
+
+      hubConnection!.on("ReceiveMessage", (arguments) {
+        final message = arguments.first.toString();
+        print("Received message: $message");
+      });
+    } catch (e) {
+      print(e.toString());
     }
   }
 
