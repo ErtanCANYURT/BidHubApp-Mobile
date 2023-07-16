@@ -1,12 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:signalr_client/hub_connection.dart';
 import 'package:signalr_client/hub_connection_builder.dart';
-import 'dart:convert';
 import 'Models/User.dart';
 import 'register.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Utils//constants.dart';
+import 'homepage.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -15,8 +16,8 @@ class LoginPage extends StatelessWidget {
   HubConnection? hubConnection;
 
   Future<void> loginUser(BuildContext context) async {
-    String email = emailController.text;
-    String password = passwordController.text;
+    String email = "ERTANCANYURT5@GMAİL.COM";
+    String password = "123456";
 
     // REST API endpointini ve gönderilecek verileri ayarlayın
     String url = 'https://bidhubappprod.azurewebsites.net/api/User/UserLogin'; // API'nizin URL'sini buraya yazın
@@ -51,7 +52,12 @@ class LoginPage extends StatelessWidget {
         //Buraya signalR connection yapılmalı
         await initSignalR();
 
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(userLoginDto: userLoginDto),
+          ),
+        );
       } else {
         // İstek başarılı olmadıysa veya kullanıcı girişi hatalıysa hata mesajını gösterin
         showDialog(

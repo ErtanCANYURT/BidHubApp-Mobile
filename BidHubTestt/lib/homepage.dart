@@ -1,12 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import 'auctiondetail.dart';
 import 'main.dart';
+import 'Models/User.dart';
 
 class HomePage extends StatefulWidget {
+  final UserLoginDto? userLoginDto; // userLoginDto parametresini nullable olarak güncelledim
+
+  const HomePage({Key? key, this.userLoginDto}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -25,8 +28,14 @@ class _HomePageState extends State<HomePage> {
 
   void fetchAuctions() async {
     try {
+      String url = 'https://bidhubappprod.azurewebsites.net/auction/Auction/ListAllAuction';
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${widget.userLoginDto?.userAccessToken}' // userLoginDto'nun null olma durumunu kontrol ediyorum
+      };
       final response = await http.get(
-        Uri.parse('https://bidhubappprod.azurewebsites.net/auction/Auction/ListAllAuction'),
+        Uri.parse(url),
+        headers: headers,
       );
 
       if (response.statusCode == 200) {
@@ -34,11 +43,11 @@ class _HomePageState extends State<HomePage> {
         List<Map<String, dynamic>> fetchedAuctions = data.map<Map<String, dynamic>>((dynamic item) {
           final auctionName = item['auctionName'];
           final auctionId = item['id'];
-          final sellerId = item['sellerId']; // Eklenen satıcının ID'si
+          final sellerId = item['sellerId'];
           return {
             'id': auctionId,
             'auctionName': auctionName,
-            'sellerId': sellerId, // Eklenen satıcının ID'si
+            'sellerId': sellerId,
           };
         }).toList();
         setState(() {
@@ -46,11 +55,9 @@ class _HomePageState extends State<HomePage> {
           filteredAuctions = fetchedAuctions;
         });
       } else {
-        // Handle error response
         print('Failed to fetch auctions. Error: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle network or other errors
       print('Failed to fetch auctions. Error: $e');
     }
   }
@@ -91,17 +98,16 @@ class _HomePageState extends State<HomePage> {
                 itemCount: filteredAuctions.length,
                 itemBuilder: (context, index) {
                   final auctionId = filteredAuctions[index]['id'].toString();
-                  final sellerId = filteredAuctions[index]['sellerId'].toString(); // Satıcının ID'sini al
+                  final sellerId = filteredAuctions[index]['sellerId'].toString();
                   return GestureDetector(
                     onTap: () {
-                      // İlgili açık artırma detay sayfasına yönlendirme işlemleri
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => AuctionDetailPage(
                             auctionId: auctionId,
                             auctionName: filteredAuctions[index]['auctionName'],
-                            sellerId: sellerId, // Satıcının ID'sini geçir
+                            sellerId: sellerId,
                           ),
                         ),
                       );

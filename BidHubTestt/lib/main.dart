@@ -13,11 +13,11 @@ void main() async {
   runApp(BidHubApp());
 }
 
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -95,11 +95,11 @@ class BidHubApp extends StatelessWidget {
       initialRoute: '/loginpage',
       routes: {
         '/loginpage': (context) => LoginPage(),
-        '/home': (context) => HomePage(),
+        '/home': (context) => HomePage(userLoginDto: null), // Buradaki null değeri yerine userLoginDto'yu geçmelisiniz
         '/messages': (context) => MessagesPage(),
-        '/account': (context)=> AccountPage(),
-        '/sell' : (context)=> SellPage(),
-        '/myListings': (context)=> MyListingPage(),
+        '/account': (context) => AccountPage(),
+        '/sell': (context) => SellPage(),
+        '/myListings': (context) => MyListingPage(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (_) => NotFoundPage());
