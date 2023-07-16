@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'Utils/constants.dart';
 import 'sendmessage.dart';
 import 'sellerpage.dart';
 
@@ -80,10 +81,68 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
               isFavorite ? Icons.favorite : Icons.favorite_border,
               color: isFavorite ? Colors.red : null,
             ),
-            onPressed: () {
-              setState(() {
-                isFavorite = !isFavorite;
-              });
+            onPressed: () async {
+              //BURADA MERKEZE POST YAPICAK FAVORİ EKLİYCEK
+              String url = 'https://bidhubappprod.azurewebsites.net/favorite/Favorite/AddFavoriteAsync'; // API'nizin URL'sini buraya yazın
+              Map<String, String> headers = {'Content-Type': 'application/json'};
+              Map<String, dynamic> jsonBody = {
+                'UserId' : 10,
+                'AuctionId': widget.auctionId,
+                'DateTime' : DateTime.now().toUtc().toIso8601String(),
+              };
+
+              try {
+                http.Response response = await http.post(
+                  Uri.parse(url),
+                  headers: headers,
+                  body: jsonEncode(jsonBody),
+                );
+
+                // İstek başarılıysa ve kullanıcı girişi onaylandıysa
+                if (response.statusCode == 200) {
+                  setState(() {
+                    isFavorite = !isFavorite;
+                  });
+                } else {
+                  // İstek başarılı olmadıysa veya kullanıcı girişi hatalıysa hata mesajını gösterin
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Hata'),
+                        content: Text('Ürün favoriye eklenemedi. Lütfen tekrar deneyin.'),
+                        actions: [
+                          TextButton(
+                            child: Text('Tamam'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              } catch (e) {
+                // İstek gönderilirken bir hata oluştuysa hata mesajını gösterin
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Hata'),
+                      content: Text('Bir hata oluştu. Lütfen tekrar deneyin.'),
+                      actions: [
+                        TextButton(
+                          child: Text('Tamam'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             },
           ),
         ],
