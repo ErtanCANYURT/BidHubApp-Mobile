@@ -122,7 +122,9 @@ class _HomePageState extends State<HomePage> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8.0),
                                 image: DecorationImage(
-                                  image: AssetImage('assets/images/product_${index + 1}.jpg'),
+                                  image: NetworkImage(
+                                    'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif',
+                                  ),
                                   fit: BoxFit.cover,
                                 ),
                               ),
