@@ -1,24 +1,36 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class MyOrdersPage extends StatelessWidget {
-  final List<Order> orders = [
-    Order(
-      id: '1',
-      productName: 'Ürün 1',
-      price: 100,
-      quantity: 2,
-      date: DateTime.now(),
-      status: 'Tamamlandı',
-    ),
-    Order(
-      id: '2',
-      productName: 'Ürün 2',
-      price: 50,
-      quantity: 1,
-      date: DateTime.now(),
-      status: 'Sipariş Alındı',
-    ),
-  ];
+class MyOrdersPage extends StatefulWidget {
+  @override
+  _MyOrdersPageState createState() => _MyOrdersPageState();
+}
+
+class _MyOrdersPageState extends State<MyOrdersPage> {
+  List<Order> orders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchOrders();
+  }
+
+  Future<void> fetchOrders() async {
+    final url = 'https://bidhubappprod.azurewebsites.net/bids/Bids/MyAllOrder';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      final responseData = json.decode(response.body);
+      final List<dynamic> orderData = responseData;
+
+      setState(() {
+        orders = orderData.map((data) => Order.fromJson(data)).toList();
+      });
+    } catch (error) {
+      print('Error fetching orders: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,24 +41,25 @@ class MyOrdersPage extends StatelessWidget {
       body: ListView.builder(
         itemCount: orders.length,
         itemBuilder: (context, index) {
+          final order = orders[index];
           return Card(
             child: ListTile(
-              title: Text('Sipariş ID: ${orders[index].id}'),
+              title: Text('Sipariş ID: ${order.id}'),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Ürün: ${orders[index].productName}'),
-                  Text('Fiyat: ${orders[index].price} TL'),
-                  Text('Adet: ${orders[index].quantity}'),
-                  Text('Tarih: ${orders[index].date.toString()}'),
-                  Text('Durum: ${orders[index].status}'),
+                  Text('Ürün: ${order.productName}'),
+                  Text('Fiyat: ${order.price.toStringAsFixed(2)} TL'),
+                  Text('Adet: ${order.quantity}'),
+                  Text('Tarih: ${order.date.toString()}'),
+                  Text('Durum: ${order.status}'),
                 ],
               ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => OrderDetailPage(order: orders[index]),
+                    builder: (context) => OrderDetailPage(order: order),
                   ),
                 );
               },
@@ -74,6 +87,17 @@ class Order {
     required this.date,
     required this.status,
   });
+
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      id: json['id'].toString(),
+      productName: json['auctionId'].toString(),
+      price: json['price'].toDouble(),
+      quantity: 1, // Burada bir adet varsayılan olarak ayarladım, gerektiğinde değiştirin
+      date: DateTime.parse(json['createdTime']),
+      status: 'Tamamlandı', // Durumu gelen veriden almanız gerekiyor
+    );
+  }
 }
 
 class OrderDetailPage extends StatelessWidget {
@@ -94,7 +118,7 @@ class OrderDetailPage extends StatelessWidget {
           children: [
             Text('Sipariş ID: ${order.id}'),
             Text('Ürün: ${order.productName}'),
-            Text('Fiyat: ${order.price} TL'),
+            Text('Fiyat: ${order.price.toStringAsFixed(2)} TL'),
             Text('Adet: ${order.quantity}'),
             Text('Tarih: ${order.date.toString()}'),
             Text('Durum: ${order.status}'),
