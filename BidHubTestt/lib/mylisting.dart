@@ -1,8 +1,37 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:bidhubtestt/main.dart';
 import 'package:bidhubtestt/auctiondetail.dart';
 
-class MyListingPage extends StatelessWidget {
+class MyListingPage extends StatefulWidget {
+  @override
+  _MyListingPageState createState() => _MyListingPageState();
+}
+
+class _MyListingPageState extends State<MyListingPage> {
+  List<dynamic> favoriteAuctions = []; // Holds the fetched favorite auctions
+
+  @override
+  void initState() {
+    super.initState();
+    fetchFavoriteAuctions();
+  }
+
+  Future<void> fetchFavoriteAuctions() async {
+    final url = 'https://bidhubappprod.azurewebsites.net/favorite/Favorite/ListMyAllFavorites';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      final responseData = json.decode(response.body);
+      setState(() {
+        favoriteAuctions = responseData as List<dynamic>;
+      });
+    } catch (error) {
+      print('Error fetching favorite auctions: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
@@ -11,21 +40,20 @@ class MyListingPage extends StatelessWidget {
           title: Text('Favorilerim'),
         ),
         body: ListView.builder(
-          itemCount: 5, // Favorilere alınmış açık artırma sayısı
+          itemCount: favoriteAuctions.length,
           itemBuilder: (context, index) {
-            final auctionId = 'Açık artırma $index';
-            final auctionName = 'Açık artırma $index';
+            final auctionId = favoriteAuctions[index]['auctionId'].toString();
+            final auctionName = favoriteAuctions[index]['auctionName'];
             return Card(
               child: InkWell(
                 onTap: () {
-                  // Favori ilanın detay sayfasına yönlendirme
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => AuctionDetailPage(
                         auctionId: auctionId,
                         auctionName: auctionName,
-                        sellerId: '', // Satıcının ID'si
+                        sellerId: '', // Set the actual seller ID
                       ),
                     ),
                   );
@@ -37,7 +65,7 @@ class MyListingPage extends StatelessWidget {
                       height: 100,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/images/auction_$index.jpg'), // Değiştirilmesi gereken yol
+                          image: AssetImage('assets/images/auction_$index.jpg'),
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(8),
@@ -67,10 +95,10 @@ class MyListingPage extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         Icons.favorite,
-                        color: Colors.red, // Favori butonunun rengi kırmızı
+                        color: Colors.red,
                       ),
                       onPressed: () {
-                        // Favoriden çıkarma işlemi
+                        // Remove from favorites
                       },
                     ),
                   ],
