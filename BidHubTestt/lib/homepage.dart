@@ -6,7 +6,7 @@ import 'main.dart';
 import 'Models/User.dart';
 
 class HomePage extends StatefulWidget {
-  final UserLoginDto? userLoginDto; // userLoginDto parametresini nullable olarak güncelledim
+  final UserLoginDto? userLoginDto;
 
   const HomePage({Key? key, this.userLoginDto}) : super(key: key);
 
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
       String url = 'https://bidhubappprod.azurewebsites.net/auction/Auction/ListAllAuction';
       Map<String, String> headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${widget.userLoginDto?.userAccessToken}' // userLoginDto'nun null olma durumunu kontrol ediyorum
+        'Authorization': 'Bearer ${widget.userLoginDto?.userAccessToken}'
       };
       final response = await http.get(
         Uri.parse(url),
@@ -99,6 +99,7 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                   final auctionId = filteredAuctions[index]['id'].toString();
                   final sellerId = filteredAuctions[index]['sellerId'].toString();
+                  final imagePath = 'assets/images/${index + 1}.jpg';
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -122,9 +123,7 @@ class _HomePageState extends State<HomePage> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8.0),
                                 image: DecorationImage(
-                                  image: NetworkImage(
-                                    'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif',
-                                  ),
+                                  image: AssetImage(imagePath),
                                   fit: BoxFit.cover,
                                 ),
                               ),

@@ -165,6 +165,10 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
                 child: Text('No data available'),
               );
             }
+
+            // Get the total number of images
+            final totalImages = auction['totalImages'] ?? 0;
+
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,13 +177,14 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
                     height: 240,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: 3,
+                      itemCount: totalImages,
                       itemBuilder: (context, index) {
+                        final imagePath = 'assets/images/${widget.auctionId}/${index + 1}.jpg'; // Değişiklik yapıldı
                         return Container(
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage('assets/images/product_${index + 1}.jpg'),
+                              image: AssetImage(imagePath),
                               fit: BoxFit.cover,
                             ),
                           ),
