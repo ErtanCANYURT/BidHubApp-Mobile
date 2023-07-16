@@ -43,17 +43,19 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> {
     final bidAmount = int.parse(bidAmountController.text);
     final createdDate = DateTime.now().toUtc().toString();
 
-    final requestBody = {
-      "auctionId": int.parse(widget.auctionId),
-      "bidAmount": bidAmount,
-      "createdDate": createdDate,
+    String url = 'https://bidhubappprod.azurewebsites.net/bids/Bids/AddAsync'; // API'nizin URL'sini buraya yazın
+    Map<String, String> headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${Constants.user.userAccessToken}'};
+    Map<String, dynamic> jsonBody = {
+      'AuctionId': widget.auctionId,
+      'BidAmount': bidAmount,
+      'CreatedDate': createdDate,
     };
 
     try {
       final response = await http.post(
-        Uri.parse('https://bidhubappprod.azurewebsites.net/bids/Bids/AddAsync'),
+        Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode(requestBody),
+        body: json.encode(jsonBody),
       );
 
       if (response.statusCode == 200) {
