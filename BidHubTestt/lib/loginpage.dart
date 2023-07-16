@@ -16,8 +16,8 @@ class LoginPage extends StatelessWidget {
   HubConnection? hubConnection;
 
   Future<void> loginUser(BuildContext context) async {
-    String email = "ERTANCANYURT5@GMAİL.COM";
-    String password = "123456";
+    String email = emailController.text;
+    String password = passwordController.text;
 
     // REST API endpointini ve gönderilecek verileri ayarlayın
     String url = 'https://bidhubappprod.azurewebsites.net/api/User/UserLogin'; // API'nizin URL'sini buraya yazın
